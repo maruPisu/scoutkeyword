@@ -1,7 +1,9 @@
 import search_auto_single, email_handler
 import requests, sys, hashlib, unicodedata
-import http.cookiejar as cookielib
 from html.parser import HTMLParser
+
+email_handler.send("pisu.maru@gmail.com", "sbj", "msg")
+sys.exit()
 
 nPages = 6
 baseLink = "https://www.autoscout24.es"
@@ -30,13 +32,13 @@ class Car:
         name = initName
         
     def toString(self):
-        print('\n***************\nfound a car: ' + self.name)
+        print('\n***************\nfound a car: ' + self.name.decode('ascii'))
         print('link: ' + self.link)
         print('\nmileage: ' + self.mileage)
         print('first registration: ' + self.year)
-        print('city: ' + self.city)
-        print('description: ' + self.description)
-        print('image: ' + self.image)
+        print('city: ' + self.city.decode('ascii'))
+        print('description: ' + self.description.decode('ascii'))
+        print('image: ' + self.image.decode('ascii'))
         
     def appendToEmail(self):
         global emailBody
@@ -140,18 +142,16 @@ class MyHTMLParser(HTMLParser):
     def handle_data(self, data):
         #print("Encountered some data  :", data)
         if(self.takeNameNext):
-            self.thisCar.name = data.encode('utf-8').strip()
-            unicodedata.normalize('NFKD', self.thisCar.name).encode('ascii', 'ignore')
+            self.thisCar.name = unicodedata.normalize('NFKD', data.strip()).encode('ascii', 'ignore')
             self.takeNameNext = False
         if(self.takeMileageNext):
-            self.thisCar.mileage = data.encode('utf-8').strip()
+            self.thisCar.mileage = data.strip()
             self.takeMileageNext = False
         if(self.takeYearNext):
-            self.thisCar.year = data.encode('utf-8').strip()
+            self.thisCar.year = data.strip()
             self.takeYearNext = False
         if(self.takeCityNext):
-            self.thisCar.city = data.encode('utf-8').strip()
-            unicodedata.normalize('NFKD', self.thisCar.city).encode('ascii', 'ignore')
+            self.thisCar.city = unicodedata.normalize('NFKD', data.strip()).encode('ascii', 'ignore')
             self.takeCityNext = False
             
 for currentPage in range(nPages):
@@ -164,8 +164,8 @@ for currentPage in range(nPages):
         if car.name == "car":
             continue
         car.description = search_auto_single.getDescription(car.link)
-        unicodedata.normalize('NFKD', car.description).encode('ascii', 'ignore')
-        if("carretera" in car.description or "autovia" in car.description or "autopista" in car.description):
+        car.description = unicodedata.normalize('NFKD', car.description).encode('ascii', 'ignore')
+        if(b"carretera" in car.description or b"autovia" in car.description or b"autopista" in car.description):
             car.save()
 if emailBody:
     email_handler.send("pisu.maru@gmail.com", "New cars found", emailBody)

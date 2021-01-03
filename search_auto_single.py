@@ -1,5 +1,4 @@
 import requests
-import http.cookiejar as cookielib
 from html.parser import HTMLParser
 
 curSession = requests.Session() 
