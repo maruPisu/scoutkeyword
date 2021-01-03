@@ -141,6 +141,7 @@ class MyHTMLParser(HTMLParser):
         #print("Encountered some data  :", data)
         if(self.takeNameNext):
             self.thisCar.name = data.encode('utf-8').strip()
+            unicodedata.normalize('NFKD', self.thisCar.name).encode('ascii', 'ignore')
             self.takeNameNext = False
         if(self.takeMileageNext):
             self.thisCar.mileage = data.encode('utf-8').strip()
@@ -150,6 +151,7 @@ class MyHTMLParser(HTMLParser):
             self.takeYearNext = False
         if(self.takeCityNext):
             self.thisCar.city = data.encode('utf-8').strip()
+            unicodedata.normalize('NFKD', self.thisCar.city).encode('ascii', 'ignore')
             self.takeCityNext = False
             
 for currentPage in range(nPages):
