@@ -76,7 +76,7 @@ class Car:
             </table>
             <hr>
         </div>
-        """.format(self.link, self.image, self.link, self.name, self.mileage, self.year, self.description, self.city)
+        """.format(self.link, self.image.decode('ascii'), self.link, self.name.decode('ascii'), self.mileage, self.year, self.description.decode('ascii'), self.city.decode('ascii'))
         emailBody = emailBody + carHTML
         
     def save(self):
