@@ -161,8 +161,8 @@ for currentPage in range(nPages):
     for car in parser.cars:
         if car.name == "car":
             continue
-        car.description = search_auto_single.getDescription(car.link).encode('utf-8')
-        if("carretera" in car.description or "autovía".encode('utf8') in car.description or "autopista" in car.description):
+        car.description = search_auto_single.getDescription(car.link).normalize('NFKD', title).encode('ascii', 'ignore')
+        if("carretera" in car.description or "autovia".encode('utf8') in car.description or "autopista" in car.description):
             car.save()
 if emailBody:
     email_handler.send("pisu.maru@gmail.com", "New cars found", emailBody)
