@@ -2,9 +2,6 @@ import search_auto_single, email_handler
 import requests, sys, hashlib, unicodedata
 from html.parser import HTMLParser
 
-email_handler.send("pisu.maru@gmail.com", "sbj", "msg")
-sys.exit()
-
 nPages = 6
 baseLink = "https://www.autoscout24.es"
 cookiesFileName = "cookies.txt"
