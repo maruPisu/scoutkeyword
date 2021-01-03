@@ -39,4 +39,4 @@ def send(recipient, subject, message):
         server.sendmail(sender_email, recipient, MIMEmessage.as_string())
         print("a5")
         server.quit()
-send("pisu.maru@gmail.com", "sgg", "asdfsasdf")
+        
