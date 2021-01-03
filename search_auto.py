@@ -3,7 +3,7 @@ import requests, sys, hashlib
 import http.cookiejar as cookielib
 from html.parser import HTMLParser
 
-nPages = 2
+nPages = 6
 baseLink = "https://www.autoscout24.es"
 cookiesFileName = "cookies.txt"
 url = "https://www.autoscout24.es/lst/?sort=age&desc=1&custtype=P&ustate=N%2CU&size=20&page={}&cy=E&priceto=8000&fregfrom=2007&atype=C&"
@@ -132,7 +132,7 @@ class MyHTMLParser(HTMLParser):
             if(name == "class" and value == "cldt-summary-seller-contact-zip-city"):
                 self.takeCityNext = True
             if(tag == "as24-listing-summary-image" and name == "data-images"):
-                self.thisCar.image = value.split('/{size}.{format},')[0]
+                self.thisCar.image = value.split('/{size}.{format},')[0].encode('utf-8')
         if takeLink:
             takeLink = False
             self.thisCar.link = thisLink
@@ -140,16 +140,16 @@ class MyHTMLParser(HTMLParser):
     def handle_data(self, data):
         #print("Encountered some data  :", data)
         if(self.takeNameNext):
-            self.thisCar.name = data.strip()
+            self.thisCar.name = data.encode('utf-8').strip()
             self.takeNameNext = False
         if(self.takeMileageNext):
-            self.thisCar.mileage = data.strip()
+            self.thisCar.mileage = data.encode('utf-8').strip()
             self.takeMileageNext = False
         if(self.takeYearNext):
-            self.thisCar.year = data.strip()
+            self.thisCar.year = data.encode('utf-8').strip()
             self.takeYearNext = False
         if(self.takeCityNext):
-            self.thisCar.city = data.strip()
+            self.thisCar.city = data.encode('utf-8').strip()
             self.takeCityNext = False
             
 for currentPage in range(nPages):
@@ -161,8 +161,8 @@ for currentPage in range(nPages):
     for car in parser.cars:
         if car.name == "car":
             continue
-        car.description = search_auto_single.getDescription(car.link)
-        if("carretera" in car.description or "autovía" in car.description or "autopista" in car.description):
+        car.description = search_auto_single.getDescription(car.link).encode('utf-8')
+        if("carretera" in car.description or "autovía".encode('utf8') in car.description or "autopista" in car.description):
             car.save()
 if emailBody:
     email_handler.send("pisu.maru@gmail.com", "New cars found", emailBody)
